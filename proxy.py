@@ -1,6 +1,10 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
 
+#############################################
+# Flask & werkzeug HTTP Proxy Sample code.
+# - Code by Jioh L. Jung (ziozzang@gmail.com)
+#############################################
 import httplib
 import re
 import urllib
@@ -17,13 +21,12 @@ app = Flask(__name__)
 DEBUG_FLAG = True
 LISTEN_PORT = 7788
 
-
-#from jiffy.admin.login import check_login
-
 proxy = Blueprint('proxy', __name__)
 
+# You can insert Authentication here.
 #proxy.before_request(check_login)
 
+# Filters.
 HTML_REGEX = re.compile(r'((?:src|action|href)=["\'])/')
 JQUERY_REGEX = re.compile(r'(\$\.(?:get|post)\(["\'])/')
 JS_LOCATION_REGEX = re.compile(r'((?:window|document)\.location.*=.*["\'])/')
@@ -118,16 +121,16 @@ def proxy_request(host, file=""):
     root = url_for(".proxy_request", host=host)
     contents = resp.read()
 
-    #print d
-
     # Restructing Contents.
     if d["content-type"].find("application/json") >= 0:
+        # JSON format conentens will be modified here.
         jc = json.loads(contents)
         if jc.has_key("nodes"):
             del jc["nodes"]
         contents = json.dumps(jc)
 
     else:
+        # Generic HTTP.
         for regex in REGEXES:
            contents = regex.sub(r'\1%s' % root, contents)
 
