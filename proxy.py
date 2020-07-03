@@ -5,10 +5,17 @@
 # Flask & werkzeug HTTP Proxy Sample code.
 # - Code by Jioh L. Jung (ziozzang@gmail.com)
 #############################################
-import httplib
+
+import sys
+if sys.version_info[0] < 3:
+  import httplib
+  import urlparse
+else:
+  import http.client as httplib
+  from urllib.parse import urlparse
+
 import re
 import urllib
-import urlparse
 import json
 
 from flask import Flask, Blueprint, request, Response, url_for
@@ -56,8 +63,8 @@ def parse_host_port(h):
 def proxy_request(host, file=""):
     hostname, port = parse_host_port(host)
 
-    print "H: '%s' P: %d" % (hostname, port)
-    print "F: '%s'" % (file)
+    print ("H: '%s' P: %d" % (hostname, port))
+    print ("F: '%s'" % (file))
     # Whitelist a few headers to pass on
     request_headers = {}
     for h in ["Cookie", "Referer", "X-Csrf-Token"]:
@@ -84,7 +91,7 @@ def proxy_request(host, file=""):
     d = {}
     response_headers = Headers()
     for key, value in resp.getheaders():
-        print "HEADER: '%s':'%s'" % (key, value)
+        print ("HEADER: '%s':'%s'" % (key, value))
         d[key.lower()] = value
         if key in ["content-length", "connection", "content-type"]:
             continue
