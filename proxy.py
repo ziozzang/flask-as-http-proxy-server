@@ -12,7 +12,7 @@ if sys.version_info[0] < 3:
   import urlparse
 else:
   import http.client as httplib
-  from urllib.parse import urlparse
+  import urllib.parse as urlparse
 
 import re
 import urllib
