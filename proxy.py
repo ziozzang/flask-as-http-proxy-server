@@ -126,6 +126,7 @@ def proxy_request(proto, host, file=""):
             redirect_path += "?" + redirect_parsed.query
 
         munged_path = url_for(".proxy_request",
+                              proto=proto,
                               host=redirect_host,
                               file=redirect_path[1:])
 
@@ -134,7 +135,7 @@ def proxy_request(proto, host, file=""):
 
     # Rewrite URLs in the content to point to our URL schemt.method == " instead.
     # Ugly, but seems to mostly work.
-    root = url_for(".proxy_request", host=host)
+    root = url_for(".proxy_request", proto=proto, host=host)
     contents = resp.read()
 
     # Restructing Contents.
